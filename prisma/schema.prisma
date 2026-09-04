@@ -1,0 +1,113 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id                 String      @id @default(cuid())
+  name               String
+  slug               String      @unique
+  description        String
+  price              Float
+  discountPrice      Float?
+  costPrice          Float?      // تكلفة التصنيع لحساب هامش الربح
+  stock              Int         @default(20)
+  size               String      @default("100ml") // e.g., "100ml", "50ml"
+  concentration      String      @default("Eau de Parfum") // Eau de Parfum, Extrait de Parfum, Oil
+  gender             String      @default("للجنسين") // رجالي، نسائي، للجنسين
+  category           String      @default("عطور نيش") // عطور نيش، عطور شرقية، مجموعات فاخرة
+  
+  // Fragrance Pyramid & Attributes
+  topNotes           String      // e.g. "برغموت إيطالي, هيل غواتيمالي, فلفل وردي"
+  heartNotes         String      // e.g. "ياسمين ملكي, زعفران نقي, ورد جوري"
+  baseNotes          String      // e.g. "عنبر دافئ, خشب الصندل, عود كمبودي, مسك فاخر"
+  
+  longevity          Int         @default(5) // مقياس الثبات 1-5
+  sillage            Int         @default(5) // مقياس الفوحان 1-5
+  
+  images             String      // Comma-separated or JSON list of image URLs
+  isFeatured         Boolean     @default(false)
+  
+  // 25 Smart Product Creator Fields
+  barcode            String?     // كود الباركوود الموحد EAN-13
+  badge              String?     // 👑 إصدار محدود، 🔥 الأكثر مبيعاً، 💎 VIP
+  variants           String?     // JSON array for multi-size variants [50ml, 100ml, 200ml]
+  originMap          String?     // JSON map for ingredient origins (Italy, France, Cambodia)
+  isPreOrder         Boolean     @default(false)
+  preOrderDate       DateTime?
+  layeringProductIds String?     // Comma separated IDs of matching perfumes for layering
+  
+  items              OrderItem[]
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+}
+
+model Order {
+  id                 String      @id @default(cuid())
+  orderNumber        String      @unique
+  customerName       String
+  customerPhone      String
+  address            String
+  city               String
+  totalAmount        Float
+  paymentMethod      String      @default("COD") // COD, Card, Tabby, Vodafone, Fawry, Mada
+  paymentGatewayCode String?     // PAYMOB, TAP, VODAFONE_CASH, FAWRY, etc.
+  status             String      @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  trackingNumber     String?     // رقم تتبع الشحنة
+  shippingCarrier    String?     // اسم شركة الشحن (أرامكس، سمسا، DHL، إلخ)
+  giftMessage        String?     // رسالة الإهداء المخصصة
+  giftRecipientPhone String?     // رقم هاتف المستلم (للهدايا)
+  giftRecipientName  String?     // اسم المستلم (للهدايا)
+  includeSample      Boolean     @default(true) // عينة تجريبية قبل التغليف
+  items              OrderItem[]
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+}
+
+model Setting {
+  id             String   @id @default("store-config")
+  whatsappNumber String   @default("966501234567")
+  storeName      String   @default("روما للعطور الفاخرة")
+  announcement   String?
+  updatedAt      DateTime @updatedAt
+}
+
+model PaymentGateway {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  nameAr      String
+  nameEn      String
+  icon        String?
+  isEnabled   Boolean  @default(true)
+  isDefault   Boolean  @default(false)
+  isTestMode  Boolean  @default(true)
+  apiKey      String?
+  secretKey   String?
+  merchantId  String?
+  publicKey   String?
+  updatedAt   DateTime @updatedAt
+}
+
+model NotificationSetting {
+  id          String   @id @default(cuid())
+  event       String   @unique // ORDER_PAID, ORDER_SHIPPED, ORDER_DELIVERED, ABANDONED_CART
+  channel     String   @default("WHATSAPP")
+  isEnabled   Boolean  @default(true)
+  templateAr  String
+  templateEn  String?
+  updatedAt   DateTime @updatedAt
+}

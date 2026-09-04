@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-tajawal: 'Tajawal', sans-serif;
+}
+
+body {
+  font-family: var(--font-tajawal);
+  background-color: #0d0f12;
+  color: #f3f4f6;
+  direction: rtl;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar for Luxury aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0f12;
+}
+::-webkit-scrollbar-thumb {
+  background: #b86b11;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #f5b13e;
+}

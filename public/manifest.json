@@ -1,0 +1,21 @@
+{
+  "name": "روما للعطور الفاخرة | Roma Luxury Perfumes",
+  "short_name": "روما للعطور",
+  "description": "متجر عطور فاخر يضم أنقى عطور النيش والزيوت الشرقية الملكية مع الدفع عند الاستلام والشراء عبر الواتساب.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0f12",
+  "theme_color": "#b86b11",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=192&auto=format&fit=crop",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=512&auto=format&fit=crop",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
